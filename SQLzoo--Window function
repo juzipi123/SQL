@@ -1,0 +1,51 @@
+1.Show the lastName, party and votes for the constituency 'S14000024' in 2017.
+Answer:
+SELECT lastName, party, votes
+FROM ge
+WHERE constituency = 'S14000024' AND yr = 2017
+ORDER BY votes DESC
+
+2.Show the party and RANK for constituency S14000024 in 2017. List the output by party#用窗口函数排序
+Answer:
+select party,votes,
+rank() over (order by votes desc) posn
+from ge
+where yr=2017 and constituency='S14000024'
+order by party
+
+3.Use PARTITION to show the ranking of each party in S14000021 in each year. Include yr, party, votes and ranking (the party with the most votes is 1).#分区排序
+Answer:
+select yr,party,votes,
+rank() over (partition by yr order by votes desc) as ranking
+from ge
+where constituency='S14000021'
+order by party,yr
+
+4.Use PARTITION BY constituency to show the ranking of each party in Edinburgh in 2017. Order your results so the winners are shown first, then ordered by constituency.
+Answer:
+select constituency,party,votes,
+rank() over (partition by constituency order by votes desc) ranking
+from ge
+where yr=2017 and constituency between 'S14000021' and 'S14000026'
+order by ranking ,constituency 
+
+5.Show the parties that won for each Edinburgh constituency in 2017.#利用子查询创建窗口函数
+Answer:
+select constituency,party 
+from (select constituency,party,
+rank() over (partition by constituency order by votes desc) posn 
+from ge 
+where constituency between 'S14000021' and 'S14000026' and yr  = 2017 ) as gee
+where gee.posn=1
+
+6.Show how many seats for each party in Scotland in 2017.#子查询+窗口函数+分组合并
+Answer:
+select party,count(constituency)
+from 
+(select constituency,party,rank() over (partition by constituency order by votes desc) posn
+from ge
+where yr=2017 and constituency like 'S%') gee
+where posn=1
+group by party
+
+
