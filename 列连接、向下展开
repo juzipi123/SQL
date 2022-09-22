@@ -1,0 +1,21 @@
+select c.槽框编号,c.日期,
+'厚度1'=substring(c.厚度1,b.number,charindex('，',c.厚度1+'，',b.number)-b.number),
+'厚度2'=substring(c.厚度2,b.number,charindex('，',c.厚度2+'，',b.number)-b.number),
+'厚度3'=substring(c.厚度3,b.number,charindex('，',c.厚度3+'，',b.number)-b.number)   //向下展开代码
+from (SELECT a.槽框编号,a.日期,a.槽框厚度1+','+a.槽框厚度2 厚度1,a.槽框厚度3+','+a.槽框厚度4 厚度2,a.槽框厚度5+','+a.槽框厚度6 厚度3  FROM [阳极初检表] a) c
+inner join master.dbo.spt_values b on b.number between 1 and len(c.厚度1)
+and substring('，'+c.厚度1,b.number,1)='，'
+where b.type='P' 
+
+from
+304B90	2020-08-07	60.2	60.4	60.0	60.4	60.2	60.5	
+D18366	2008-11-25	62.3	62.5	62.3	62.4	62.3	62.5	
+D183	2008-11-25	62.3	62.5	62.3	62.4	62.3	62.5	
+
+to
+304B90	2020-08-07	60.2	60.0	60.2
+304B90	2020-08-07	60.4	60.4	60.5
+D18366	2008-11-25	62.3	62.3	62.3
+D18366	2008-11-25	62.5	62.4	62.5
+D183	2008-11-25	62.3	62.3	62.3
+D183	2008-11-25	62.5	62.4	62.5
