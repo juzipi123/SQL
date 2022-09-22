@@ -14,3 +14,6 @@ join(
 on step_1.rank_id = step_2.join_id) as temp
 
 group by 全槽框号
+
+
+注：此为SQL server代码
