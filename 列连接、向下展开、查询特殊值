@@ -1,3 +1,6 @@
+
+列连接、向下展开
+
 select c.槽框编号,c.日期,
 '厚度1'=substring(c.厚度1,b.number,charindex('，',c.厚度1+'，',b.number)-b.number),
 '厚度2'=substring(c.厚度2,b.number,charindex('，',c.厚度2+'，',b.number)-b.number),
@@ -19,3 +22,9 @@ D18366	2008-11-25	62.3	62.3	62.3
 D18366	2008-11-25	62.5	62.4	62.5
 D183	2008-11-25	62.3	62.3	62.3
 D183	2008-11-25	62.5	62.4	62.5
+
+查询最值
+select max(max_row) from (values (厚度1),(厚度2),(厚度3)) as temp(max_row)) as max_row
+
+
+注：此为SQL server代码
