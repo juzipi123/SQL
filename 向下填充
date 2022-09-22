@@ -1,0 +1,16 @@
+select 全槽框号,
+sum(case when 顺序号='最大值' then H end) as 阴极极高最大值,
+sum(case when 顺序号='最小值' then H end) as 阴极极高最小值
+from
+(select step_1.*,step_2.槽框号 as 全槽框号
+ from ( 
+     select jg.*
+     ,sum(case when 槽框号='' then 0 else 1 end)over(order by id) as rank_id 
+     from EDS_QA_DJCJGSJK2 jg ) as step_1     -- step_1:是否有值分组排序
+join( 
+    select id,槽框号,
+    row_number()over(order by id) as join_id 
+    from EDS_QA_DJCJGSJK2  where 槽框号!='' ) as step_2  -- step_2:有值分组排序
+on step_1.rank_id = step_2.join_id) as temp
+
+group by 全槽框号
